@@ -40,6 +40,7 @@ def test_area_revealed(mines: MinesweeperGame):
         [Square.UNKNOWN, Square.UNKNOWN, Square.UNKNOWN, Square.UNKNOWN],
     ]
     mines.click(0,0)
+    print(mines.revealed)
     assert (mines.revealed == revealed)
 
 

@@ -158,7 +158,10 @@ class MinesweeperGame:
         >>> game.check_if_mine(2, 2)
         True
         """
-        return False # TODO: check if mine is in (x,y) position
+        if self.mines[x][y] == 1:
+            return True
+        else:
+            return False # TODO: check if mine is in (x,y) position
 
     def count_mines_around(self, x: int, y: int) -> int:
         """
@@ -176,7 +179,27 @@ class MinesweeperGame:
         >>> game.count_mines_around(1, 1)
         1
         """
-        return False # TODO: counts the mines around (x,y) position
+
+        mine_count = 0
+        
+        for i in range(-1, 2):
+            for j in range(-1, 2):
+                if i == 0 and j == 0:
+                    continue  # Skip the central position
+                
+                new_x = x + i
+                new_y = y + j
+                
+                if 0 <= new_x < len(self.mines) and 0 <= new_y < len(self.mines[0]):
+                    if self.mines[new_x][new_y] == 1:
+                        mine_count += 1
+
+        return mine_count
+
+        
+        
+        
+        #return False # TODO: counts the mines around (x,y) position
 
     def click_around(self, x: int, y: int):
         """
@@ -212,6 +235,16 @@ class MinesweeperGame:
         Hint: looking at the 'test_area_revealed' method in tests.py might 
         be helpful. 
         """
+
+        surrounding_cells = self.get_surrounding_cells(x, y)
+        for cell_x, cell_y in surrounding_cells:
+            if self.revealed[cell_x][cell_y] == Square.UNKNOWN and self.flags[cell_x][cell_y] != 1:
+                if self.count_mines_around(cell_x, cell_y) == 0:
+                    self.click(cell_x, cell_y)
+                    self.click_around(cell_x, cell_y)
+                else:
+                    self.revealed[cell_x][cell_y] = SQUARE_CORRESPONDENCE[self.count_mines_around(cell_x, cell_y)]
+                            
         for new_x, new_y in self.get_surrounding_cells(x, y):
             pass # TODO: reveal positions that have no mines around them
 
